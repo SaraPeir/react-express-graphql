@@ -1,0 +1,9 @@
+npm run build: to update dist folder
+npm start: to launch server
+npm run dev: to launch both server (localhost:3000) and webpack devServer (client - localhost:4000)
+
+https://dev.to/kedar9/creating-a-node-app-with-react-webpack-4-babel-7-express-and-sass-3mae
+
+https://www.sitepoint.com/how-to-build-a-web-app-with-graphql-and-react/
+
+https://developer.okta.com/blog/2018/10/11/build-simple-web-app-with-express-react-graphql
