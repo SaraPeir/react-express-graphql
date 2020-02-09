@@ -8,8 +8,8 @@ const DIST_DIR = path.join(__dirname, '../dist');
 const HTML_FILE = path.join(DIST_DIR, 'index.html');
 
 const POSTS = [
-  { author: "John Doe", body: "Hello world" },
-  { author: "Jane Doe", body: "Hi, planet!" },
+  { author: "John Doe", body: "Hello world", isAvailable: true },
+  { author: "Jane Doe", body: "Hi, planet!", isAvailable: false },
 ];
 
 const schema = buildASTSchema(gql`
@@ -18,18 +18,33 @@ const schema = buildASTSchema(gql`
     post(id: ID!): Post
   }
 
+  type Mutation {
+    mutatedPost(id: ID!): Post
+  }
+
   type Post {
     id: ID
     author: String
     body: String
+    isAvailable: Boolean
   }
 `);
 
 const mapPost = (post, id) => post && ({ id, ...post });
 
+const modifiedPost = (id) => {
+  let mappedPosts = POSTS.map(mapPost)
+  mappedPosts[id].isAvailable = !mappedPosts[id].isAvailable;
+  POSTS.splice(id, 1, mappedPosts[id]);
+
+  return mappedPosts[id]
+  }
+
+
 const root = {
   posts: () => POSTS.map(mapPost),
   post: ({ id }) => mapPost(POSTS[id], id),
+  mutatedPost: ({ id }) => modifiedPost(id)
 };
 
 const app = express();
