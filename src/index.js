@@ -12,7 +12,6 @@ ReactDOM.render(
   document.getElementById('root')
 ); 
 
-
 /* import React from 'react';
 import ReactDOM from 'react-dom';
 import LOGO from './images/campania-logo.jpg';

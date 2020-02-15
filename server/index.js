@@ -19,7 +19,8 @@ const schema = buildASTSchema(gql`
   }
 
   type Mutation {
-    mutatedPost(id: ID!): Post
+    mutatedAvailability(input: PostInput!): Post
+    mutatedContent(id: ID!): Post
   }
 
   type Post {
@@ -28,23 +29,64 @@ const schema = buildASTSchema(gql`
     body: String
     isAvailable: Boolean
   }
+
+  input PostInput {
+    id: ID
+    author: String!
+    body: String!
+    isAvailable: Boolean
+  }
 `);
 
 const mapPost = (post, id) => post && ({ id, ...post });
+let mappedPosts = POSTS.map(mapPost)
 
-const modifiedPost = (id) => {
-  let mappedPosts = POSTS.map(mapPost)
-  mappedPosts[id].isAvailable = !mappedPosts[id].isAvailable;
-  POSTS.splice(id, 1, mappedPosts[id]);
+// const modifiedAvailability = (id) => {
+//   mappedPosts[id].isAvailable = !mappedPosts[id].isAvailable;
+//   POSTS.splice(id, 1, mappedPosts[id]);
+
+//   return mappedPosts[id]
+// }
+
+const modifiedAvailability = ({ input: { id, author, body, isAvailable } }) => {
+  const post = {id, author, body, isAvailable};
+  post.isAvailable = !post.isAvailable;
+
+  // mappedPosts[id].isAvailable = !mappedPosts[id].isAvailable;
+  POSTS.splice(id, 1, post);
+
+  return mapPost(post, id);
+}
+
+// const modifiedContent = ({ input: { id, author, body, isAvailable } }) => {
+//   const post = {id, author, body, isAvailable};
+
+//   post.author = 'Sara';
+//   // post.body = 'L amica geniale';
+//   post.isAvailable = mappedPosts[id].isAvailable;
+
+//   POSTS.splice(id, 1, post);
+
+//   console.log('POSTS', POSTS);
+
+//   return mapPost(post, id);
+// }
+
+const modifiedContent = (id) => {
+
+  mappedPosts[id].author = 'Sara' ;
+  mappedPosts[id].body = 'L amica geniale';
 
   return mappedPosts[id]
-  }
+}
 
 
 const root = {
-  posts: () => POSTS.map(mapPost),
+  posts: () => mappedPosts,
   post: ({ id }) => mapPost(POSTS[id], id),
-  mutatedPost: ({ id }) => modifiedPost(id)
+  mutatedAvailability: ({ input: { id, author, body, isAvailable } }) => modifiedAvailability({ input: { id, author, body, isAvailable } }),
+  mutatedContent: (id) => modifiedContent(id)
+
 };
 
 const app = express();
